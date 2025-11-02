@@ -1,7 +1,9 @@
 import { Button } from "@/components/ui/button";
-import { Leaf, Menu, Coins } from "lucide-react";
+import { Leaf, Menu, Coins, LogOut } from "lucide-react";
 import { ThemeToggle } from "./ThemeToggle";
 import { useState } from "react";
+import { useAuth } from "@/hooks/useAuth";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 
 interface HeaderProps {
   balance?: number;
@@ -10,6 +12,15 @@ interface HeaderProps {
 
 export function Header({ balance = 0, showWallet = false }: HeaderProps) {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const { user, isAuthenticated } = useAuth();
+
+  const handleLogin = () => {
+    window.location.href = "/api/login";
+  };
+
+  const handleLogout = () => {
+    window.location.href = "/api/logout";
+  };
 
   return (
     <header className="sticky top-0 z-50 bg-background/95 backdrop-blur-sm border-b">
@@ -22,20 +33,22 @@ export function Header({ balance = 0, showWallet = false }: HeaderProps) {
             <span className="font-outfit font-bold text-xl">GreenCoin Africa</span>
           </div>
           
-          <nav className="hidden md:flex items-center gap-6">
-            <a href="#" className="text-sm font-inter font-medium hover:text-primary transition-colors">
-              Home
-            </a>
-            <a href="#" className="text-sm font-inter font-medium hover:text-primary transition-colors">
-              Tasks
-            </a>
-            <a href="#" className="text-sm font-inter font-medium hover:text-primary transition-colors">
-              Map
-            </a>
-            <a href="#" className="text-sm font-inter font-medium hover:text-primary transition-colors">
-              About
-            </a>
-          </nav>
+          {isAuthenticated && (
+            <nav className="hidden md:flex items-center gap-6">
+              <a href="/" className="text-sm font-inter font-medium hover:text-primary transition-colors">
+                Home
+              </a>
+              <a href="/collector" className="text-sm font-inter font-medium hover:text-primary transition-colors">
+                Dashboard
+              </a>
+              <a href="#" className="text-sm font-inter font-medium hover:text-primary transition-colors">
+                Map
+              </a>
+              <a href="#" className="text-sm font-inter font-medium hover:text-primary transition-colors">
+                Leaderboard
+              </a>
+            </nav>
+          )}
           
           <div className="flex items-center gap-3">
             {showWallet && (
@@ -45,6 +58,31 @@ export function Header({ balance = 0, showWallet = false }: HeaderProps) {
               </div>
             )}
             <ThemeToggle />
+            
+            {isAuthenticated ? (
+              <>
+                <Avatar className="h-9 w-9">
+                  <AvatarImage src={user?.profileImageUrl || undefined} />
+                  <AvatarFallback>
+                    {user?.firstName?.[0]}{user?.lastName?.[0]}
+                  </AvatarFallback>
+                </Avatar>
+                <Button 
+                  variant="ghost" 
+                  size="icon"
+                  onClick={handleLogout}
+                  data-testid="button-logout"
+                  title="Logout"
+                >
+                  <LogOut className="h-5 w-5" />
+                </Button>
+              </>
+            ) : (
+              <Button className="hidden md:inline-flex" onClick={handleLogin} data-testid="button-get-started">
+                Get Started
+              </Button>
+            )}
+            
             <Button 
               variant="ghost" 
               size="icon"
@@ -54,25 +92,22 @@ export function Header({ balance = 0, showWallet = false }: HeaderProps) {
             >
               <Menu className="h-5 w-5" />
             </Button>
-            <Button className="hidden md:inline-flex" data-testid="button-get-started">
-              Get Started
-            </Button>
           </div>
         </div>
         
-        {mobileMenuOpen && (
+        {mobileMenuOpen && isAuthenticated && (
           <nav className="md:hidden flex flex-col gap-4 pt-4 pb-2">
-            <a href="#" className="text-sm font-inter font-medium hover:text-primary transition-colors">
+            <a href="/" className="text-sm font-inter font-medium hover:text-primary transition-colors">
               Home
             </a>
-            <a href="#" className="text-sm font-inter font-medium hover:text-primary transition-colors">
-              Tasks
+            <a href="/collector" className="text-sm font-inter font-medium hover:text-primary transition-colors">
+              Dashboard
             </a>
             <a href="#" className="text-sm font-inter font-medium hover:text-primary transition-colors">
               Map
             </a>
             <a href="#" className="text-sm font-inter font-medium hover:text-primary transition-colors">
-              About
+              Leaderboard
             </a>
           </nav>
         )}

@@ -4,6 +4,10 @@ import { Search } from "lucide-react";
 import heroImage from "@assets/generated_images/Hero_image_youth_collecting_waste_27f93307.png";
 
 export function HeroSection() {
+  const handleGetStarted = () => {
+    window.location.href = "/api/login";
+  };
+
   return (
     <section className="relative min-h-[600px] flex items-center justify-center overflow-hidden">
       <div 
@@ -26,6 +30,7 @@ export function HeroSection() {
             size="lg" 
             className="text-lg px-8 bg-primary hover:bg-primary border-primary-border"
             data-testid="button-start-collecting"
+            onClick={handleGetStarted}
           >
             Start Collecting
           </Button>
@@ -34,6 +39,7 @@ export function HeroSection() {
             variant="outline" 
             className="text-lg px-8 bg-white/10 backdrop-blur-sm border-white/30 text-white hover:bg-white/20"
             data-testid="button-register-factory"
+            onClick={handleGetStarted}
           >
             Register Factory
           </Button>

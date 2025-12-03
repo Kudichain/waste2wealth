@@ -76,10 +76,32 @@ export function serveStatic(app: Express) {
     );
   }
 
-  app.use(express.static(distPath));
+  // Configure static file serving with proper cache headers
+  app.use(express.static(distPath, {
+    maxAge: '1y', // Cache for 1 year
+    immutable: true, // Add immutable directive
+    setHeaders: (res, path) => {
+      // Set modern cache-control headers instead of expires
+      if (path.endsWith('.woff2') || path.endsWith('.woff') || path.endsWith('.ttf')) {
+        res.setHeader('Cache-Control', 'public, max-age=31536000, immutable');
+      } else if (path.endsWith('.js') || path.endsWith('.css')) {
+        res.setHeader('Cache-Control', 'public, max-age=31536000, immutable');
+      } else if (path.endsWith('.html')) {
+        res.setHeader('Cache-Control', 'public, max-age=0, must-revalidate');
+      }
+      
+      // Remove deprecated/unnecessary security headers
+      res.removeHeader('x-xss-protection');
+      res.removeHeader('expires');
+    }
+  }));
 
   // fall through to index.html if the file doesn't exist
   app.use("*", (_req, res) => {
+    // Set proper cache headers for index.html
+    res.setHeader('Cache-Control', 'public, max-age=0, must-revalidate');
+    res.removeHeader('x-xss-protection');
+    res.removeHeader('expires');
     res.sendFile(path.resolve(distPath, "index.html"));
   });
 }

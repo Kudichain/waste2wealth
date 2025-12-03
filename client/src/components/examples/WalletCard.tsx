@@ -6,7 +6,9 @@ export default function WalletCardExample() {
       <WalletCard 
         balance={2450}
         weeklyEarnings={320}
-        onRedeem={() => console.log('Redeem clicked')}
+        onRedeem={() => console.log("Redeem clicked")}
+        redeemDisabled={false}
+        redeemLabel="Redeem Coins"
       />
     </div>
   );

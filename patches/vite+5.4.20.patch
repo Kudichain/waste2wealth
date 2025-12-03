@@ -1,0 +1,32 @@
+diff --git a/node_modules/vite/dist/node/chunks/dep-D_zLpgQd.js b/node_modules/vite/dist/node/chunks/dep-D_zLpgQd.js
+index 8926328..1d48cd6 100644
+--- a/node_modules/vite/dist/node/chunks/dep-D_zLpgQd.js
++++ b/node_modules/vite/dist/node/chunks/dep-D_zLpgQd.js
+@@ -37091,16 +37091,17 @@ const UrlRewritePostcssPlugin = (opts) => {
+     postcssPlugin: "vite-url-rewrite",
+     Once(root) {
+       const promises = [];
+-      root.walkDecls((declaration) => {
+-        const importer = declaration.source?.input.file;
+-        if (!importer) {
+-          opts.logger.warnOnce(
+-            "\nA PostCSS plugin did not pass the `from` option to `postcss.parse`. This may cause imported assets to be incorrectly transformed. If you've recently added a PostCSS plugin that raised this warning, please contact the package author to fix the issue."
+-          );
+-        }
+-        const isCssUrl = cssUrlRE.test(declaration.value);
+-        const isCssImageSet = cssImageSetRE.test(declaration.value);
+-        if (isCssUrl || isCssImageSet) {
++            root.walkDecls((declaration) => {
++                const importer = declaration.source?.input.file;
++                const isCssUrl = cssUrlRE.test(declaration.value);
++                const isCssImageSet = cssImageSetRE.test(declaration.value);
++                if ((isCssUrl || isCssImageSet) && !importer) {
++                    opts.logger.warnOnce(
++                        "\nA PostCSS plugin did not pass the `from` option to `postcss.parse`. This may cause imported assets to be incorrectly transformed. If you've recently added a PostCSS plugin that raised this warning, please contact the package author to fix the issue."
++                    );
++                    return;
++                }
++                if (isCssUrl || isCssImageSet) {
+           const replacerForDeclaration = (rawUrl) => {
+             return opts.replacer(rawUrl, importer);
+           };

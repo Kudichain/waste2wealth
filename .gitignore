@@ -1,6 +1,50 @@
+# Dependencies
 node_modules
+
+# Build output
 dist
-.DS_Store
 server/public
+
+# Environment variables
+.env
+.env.local
+.env.production
+
+# Database
+*.db
+*.db-journal
+*.db-shm
+*.db-wal
+
+# Backups
+backups/
+*.backup
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# Logs
+logs
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Vite
 vite.config.ts.*
+
+# Build artifacts
 *.tar.gz
+
+# Netlify
+.netlify/
+
+# Local Netlify folder
+.netlify

@@ -1,16 +1,13 @@
-// Integration: blueprint:javascript_database
-import { Pool, neonConfig } from '@neondatabase/serverless';
-import { drizzle } from 'drizzle-orm/neon-serverless';
-import ws from "ws";
+import 'dotenv/config';
+import Database from 'better-sqlite3';
+import { drizzle } from 'drizzle-orm/better-sqlite3';
 import * as schema from "@shared/schema";
+import path from 'path';
 
-neonConfig.webSocketConstructor = ws;
+const dbPath = path.join(process.cwd(), 'waste2wealth.db');
+const sqlite = new Database(dbPath);
+const db = drizzle({ client: sqlite, schema });
 
-if (!process.env.DATABASE_URL) {
-  throw new Error(
-    "DATABASE_URL must be set. Did you forget to provision a database?",
-  );
-}
+console.log("✓ Database connection initialized");
 
-export const pool = new Pool({ connectionString: process.env.DATABASE_URL });
-export const db = drizzle({ client: pool, schema });
+export { sqlite as pool, db };
